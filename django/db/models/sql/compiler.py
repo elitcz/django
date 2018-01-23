@@ -542,8 +542,13 @@ class SQLCompiler(object):
                     from_params.extend(extra_params)
                 else:
                     extra_sql = ""
-                result.append('%s %s%s ON ('
-                        % (join_type, qn(name), alias_str))
+                for model, hint in self.query.hints.items():
+                    if model == name:
+                        part = ' FORCE INDEX (%s)' % ', '.join([qn(h) for h in hint])
+                        result.append('%s %s%s %s ON ('% (join_type, qn(name), alias_str, part))
+                        break
+                else:
+                    result.append('%s %s%s ON (' % (join_type, qn(name), alias_str))
                 for index, (lhs_col, rhs_col) in enumerate(join_cols):
                     if index != 0:
                         result.append(' AND ')
