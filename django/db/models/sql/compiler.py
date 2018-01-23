@@ -543,7 +543,7 @@ class SQLCompiler(object):
                 else:
                     extra_sql = ""
                 for model, hint in self.query.hints.items():
-                    if model == name:
+                    if model == name and hasattr(self.connection, 'mysql_version'):
                         part = ' FORCE INDEX (%s)' % ', '.join([qn(h) for h in hint])
                         result.append('%s %s%s %s ON ('% (join_type, qn(name), alias_str, part))
                         break
