@@ -1,4 +1,3 @@
-"""Tests for jslex."""
 # encoding: utf-8
 # originally from https://bitbucket.org/ned/jslex
 
