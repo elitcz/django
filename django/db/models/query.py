@@ -718,6 +718,11 @@ class QuerySet(object):
 
         return obj
 
+    def with_hints(self, **kwargs):
+        clone = self._clone()
+        for model, hint in kwargs.items(): clone.query.add_hint(model, hint)
+        return clone
+
     def order_by(self, *field_names):
         """
         Returns a new QuerySet instance with the ordering changed.
