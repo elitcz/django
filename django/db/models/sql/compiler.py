@@ -557,7 +557,13 @@ class SQLCompiler(object):
                 result.append('%s)' % extra_sql)
             else:
                 connector = '' if first else ', '
-                result.append('%s%s%s' % (connector, qn(name), alias_str))
+                for model, hint in self.query.hints.items():
+                    if model == name and hasattr(self.connection, 'mysql_version'):
+                        part = ' FORCE INDEX (%s)' % ', '.join([qn(h) for h in hint])
+                        result.append('%s %s%s %s '% (connector, qn(name), alias_str, part))
+                        break
+                else:
+                    result.append('%s%s%s' % (connector, qn(name), alias_str))
             first = False
         for t in self.query.extra_tables:
             alias, unused = self.query.table_alias(t)
