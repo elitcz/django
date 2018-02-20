@@ -546,6 +546,7 @@ class SQLCompiler(object):
                     if model == name and hasattr(self.connection, 'mysql_version'):
                         part = ' FORCE INDEX (%s)' % ', '.join([qn(h) for h in hint])
                         result.append('%s %s%s %s ON ('% (join_type, qn(name), alias_str, part))
+                        del self.query.hints[model]
                         break
                 else:
                     result.append('%s %s%s ON (' % (join_type, qn(name), alias_str))
@@ -561,6 +562,7 @@ class SQLCompiler(object):
                     if model == name and hasattr(self.connection, 'mysql_version'):
                         part = ' FORCE INDEX (%s)' % ', '.join([qn(h) for h in hint])
                         result.append('%s %s%s %s '% (connector, qn(name), alias_str, part))
+                        del self.query.hints[model]
                         break
                 else:
                     result.append('%s%s%s' % (connector, qn(name), alias_str))
